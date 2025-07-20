@@ -1,0 +1,15 @@
+README.md
+setup.py
+src/molecular/__init__.py
+src/molecular/parser.py
+src/optimization/__init__.py
+src/optimization/circuit_optimizer.py
+src/quantum/__init__.py
+src/quantum/circuit_builder.py
+src/quantum/hamiltonian_builder.py
+src/quantum/vqe_solver.py
+src/quantum_circuit_agent.egg-info/PKG-INFO
+src/quantum_circuit_agent.egg-info/SOURCES.txt
+src/quantum_circuit_agent.egg-info/dependency_links.txt
+src/quantum_circuit_agent.egg-info/requires.txt
+src/quantum_circuit_agent.egg-info/top_level.txt
