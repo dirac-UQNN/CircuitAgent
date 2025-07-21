@@ -125,8 +125,11 @@ class HardwareAwareCircuitBuilder:
         
         circuit = self._prepare_initial_state(circuit, mol_info)
         
+        # For spin orbitals: we have 2*num_orbitals spin orbitals total
+        # The first num_electrons spin orbitals are occupied
+        num_spin_orbitals = 2 * mol_info.num_orbitals
         occupied_indices = list(range(mol_info.num_electrons))
-        virtual_indices = list(range(mol_info.num_electrons, mol_info.num_orbitals))
+        virtual_indices = list(range(mol_info.num_electrons, num_spin_orbitals))
         
         params = []
         
@@ -155,21 +158,16 @@ class HardwareAwareCircuitBuilder:
                               i: int, a: int, 
                               param: Parameter) -> QuantumCircuit:
         
-        circuit.h(2*i)
-        circuit.h(2*a)
-        circuit.cx(2*i, 2*a)
-        circuit.ry(param, 2*a)
-        circuit.cx(2*i, 2*a)
-        circuit.h(2*i)
-        circuit.h(2*a)
-        
-        circuit.h(2*i+1)
-        circuit.h(2*a+1)
-        circuit.cx(2*i+1, 2*a+1)
-        circuit.ry(param, 2*a+1)
-        circuit.cx(2*i+1, 2*a+1)
-        circuit.h(2*i+1)
-        circuit.h(2*a+1)
+        # i and a are already spin-orbital indices
+        # Single excitation from occupied spin-orbital i to virtual spin-orbital a
+        if i < circuit.num_qubits and a < circuit.num_qubits:
+            circuit.h(i)
+            circuit.h(a)
+            circuit.cx(i, a)
+            circuit.ry(param, a)
+            circuit.cx(i, a)
+            circuit.h(i)
+            circuit.h(a)
         
         return circuit
     
@@ -178,16 +176,20 @@ class HardwareAwareCircuitBuilder:
                               i: int, j: int, a: int, b: int,
                               param: Parameter) -> QuantumCircuit:
         
-        circuit.cx(2*i, 2*j)
-        circuit.cx(2*a, 2*b)
-        circuit.h(2*j)
-        circuit.h(2*b)
-        circuit.cx(2*j, 2*b)
-        circuit.ry(param/4, 2*b)
-        circuit.cx(2*j, 2*b)
-        circuit.h(2*j)
-        circuit.h(2*b)
-        circuit.cx(2*i, 2*j)
-        circuit.cx(2*a, 2*b)
+        # i, j, a, b are already spin-orbital indices
+        # Double excitation from occupied spin-orbitals i,j to virtual spin-orbitals a,b
+        if (i < circuit.num_qubits and j < circuit.num_qubits and 
+            a < circuit.num_qubits and b < circuit.num_qubits):
+            circuit.cx(i, j)
+            circuit.cx(a, b)
+            circuit.h(j)
+            circuit.h(b)
+            circuit.cx(j, b)
+            circuit.ry(param/4, b)
+            circuit.cx(j, b)
+            circuit.h(j)
+            circuit.h(b)
+            circuit.cx(i, j)
+            circuit.cx(a, b)
         
         return circuit

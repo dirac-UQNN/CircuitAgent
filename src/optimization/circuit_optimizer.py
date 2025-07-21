@@ -43,7 +43,7 @@ class CircuitOptimizer:
         self.optimization_stats = {
             'original_depth': original_depth,
             'final_depth': final_depth,
-            'depth_reduction': (original_depth - final_depth) / original_depth * 100,
+            'depth_reduction': 0.0 if original_depth == 0 else (original_depth - final_depth) / original_depth * 100,
             'original_gates': original_gates,
             'final_gates': final_gates,
             'gate_reduction': sum((original_gates.get(k, 0) - final_gates.get(k, 0)) 
@@ -124,17 +124,23 @@ class CircuitOptimizer:
         
         dag = circuit_to_dag(circuit)
         
-        for node in dag.topological_nodes():
-            if node.op.name == 'cx':
+        # Get operation nodes only
+        for node in dag.topological_op_nodes():
+            if hasattr(node, 'op') and node.op.name == 'cx':
                 qubits = node.qargs
                 
                 successors = list(dag.successors(node))
                 for succ in successors:
-                    if (succ.op.name == 'cx' and 
+                    if (hasattr(succ, 'op') and 
+                        succ.op.name == 'cx' and 
+                        hasattr(succ, 'qargs') and
                         succ.qargs == qubits):
                         
-                        dag.remove_op_node(node)
-                        dag.remove_op_node(succ)
+                        try:
+                            dag.remove_op_node(node)
+                            dag.remove_op_node(succ)
+                        except:
+                            pass  # Node might already be removed
                         break
         
         return dag_to_circuit(dag)

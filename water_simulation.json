@@ -1,0 +1,58 @@
+{
+  "molecule": {
+    "smiles": "[H]O[H]",
+    "atoms": [
+      "O",
+      "H",
+      "H"
+    ],
+    "coordinates": [
+      [
+        0.007544053151178948,
+        0.39774343120556577,
+        0.0
+      ],
+      [
+        -0.7671031370575064,
+        -0.18439316493074823,
+        0.0
+      ],
+      [
+        0.7595590839063272,
+        -0.21335026627481796,
+        0.0
+      ]
+    ],
+    "num_electrons": 10,
+    "charge": 0,
+    "spin_multiplicity": 1
+  },
+  "energy": -72.72692303104635,
+  "properties": {
+    "dipole_x": -0.07471086681272636,
+    "dipole_y": 0.020741606110766423,
+    "dipole_z": 0.0,
+    "total_dipole": 0.07753662259837683
+  },
+  "optimization_stats": {
+    "original_depth": 16,
+    "final_depth": 16,
+    "depth_reduction": 0.0,
+    "original_gates": {
+      "ry": 84,
+      "rz": 42,
+      "cx": 39,
+      "x": 10
+    },
+    "final_gates": {
+      "ry": 84,
+      "rz": 42,
+      "cx": 39,
+      "x": 10
+    },
+    "gate_reduction": 0
+  },
+  "execution_time": 102.27810645103455,
+  "circuit_depth": 16,
+  "num_qubits": 14
+}

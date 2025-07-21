@@ -37,9 +37,13 @@ class MolecularParser:
         if mol is None:
             raise ValueError("Failed to parse molecular input")
         
-        mol = Chem.AddHs(mol)
+        # Only add hydrogens if not XYZ format (XYZ has explicit atoms)
+        if input_format != 'xyz':
+            mol = Chem.AddHs(mol)
+        
         AllChem.EmbedMolecule(mol, randomSeed=42)
-        AllChem.MMFFOptimizeMolecule(mol)
+        if mol.GetNumConformers() > 0:
+            AllChem.MMFFOptimizeMolecule(mol)
         
         atoms = [atom.GetSymbol() for atom in mol.GetAtoms()]
         nuclear_charges = [atom.GetAtomicNum() for atom in mol.GetAtoms()]
@@ -108,7 +112,9 @@ class MolecularParser:
             
             mol.AddConformer(conf)
             
-            Chem.SanitizeMol(mol)
+            # Don't add implicit hydrogens for XYZ format
+            # XYZ should have all atoms explicit
+            Chem.SanitizeMol(mol, sanitizeOps=Chem.SANITIZE_ALL^Chem.SANITIZE_ADJUSTHS)
             
             return mol
             

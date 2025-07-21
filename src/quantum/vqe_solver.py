@@ -52,6 +52,7 @@ class VQESolver:
         optimizer = self._get_optimizer()
         
         if self.backend is None:
+            # VQE still requires V1 interface
             estimator = Estimator()
         else:
             from qiskit_ibm_runtime import EstimatorV2 as RuntimeEstimator
@@ -107,6 +108,7 @@ class VQESolver:
         bound_circuit = optimal_circuit.assign_parameters(optimal_params)
         
         if self.backend is None:
+            # VQE still requires V1 interface
             estimator = Estimator()
         else:
             from qiskit_ibm_runtime import EstimatorV2 as RuntimeEstimator

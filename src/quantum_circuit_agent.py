@@ -91,6 +91,10 @@ class QuantumCircuitAgent:
         print(f"Number of electrons: {mol_info.num_electrons}")
         print(f"Number of orbitals: {mol_info.num_orbitals}")
         
+        # Validate molecule
+        if mol_info.num_electrons == 0:
+            raise ValueError("Cannot simulate molecule with 0 electrons")
+        
         if method == 'vqe':
             result = self._run_vqe_simulation(mol_info, calculate_properties)
         elif method == 'adapt-vqe':
